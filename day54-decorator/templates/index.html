@@ -1,0 +1,32 @@
+<!-- templates/welcome.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #1f2937;
+        }
+        p {
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Site!</h1>
+    <p>This is your simple Flask welcome page.</p>
+    {% for _ in content %}
+        <p>{{_}}</p>
+    {% endfor %}
+</body>
+</html>
