@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Higher–Lower • Play Now</title>
+  <meta name="description" content="A clean, fast home page for the Higher–Lower guessing game." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(255, 255, 255, 0.07);
+      --text: #e7eaf3;
+      --muted: #b3b9c9;
+      --accent: #7c5cff;
+      --accent-2: #22d3ee;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 10% 10%, #11193a 0%, transparent 60%),
+                  radial-gradient(900px 600px at 90% 20%, #141a3b 0%, transparent 55%),
+                  linear-gradient(160deg, #0b1020 0%, #080c18 100%);
+      display: grid;
+      place-items: center;
+      padding: 40px 16px;
+    }
+    .shell {
+      width: 100%;
+      max-width: 980px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 20px clamp(16px, 3vw, 28px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 800; letter-spacing: 0.5px; font-size: clamp(20px, 2.5vw, 28px);
+    }
+    .badge {
+      display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 10px;
+      background: conic-gradient(from 210deg, var(--accent), var(--accent-2));
+      color: #0b1020; font-weight: 900; box-shadow: inset 0 0 12px rgba(255,255,255,.35);
+    }
+    .theme {
+      appearance: none; border: 1px solid rgba(255,255,255,.18); background: var(--panel); color: var(--text);
+      padding: 10px 14px; border-radius: 12px; cursor: pointer; font-weight: 600;
+    }
+    main {
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(16px, 3.5vw, 28px);
+      padding: clamp(20px, 4vw, 36px);
+    }
+    @media (max-width: 880px) { main { grid-template-columns: 1fr; } }
+
+    .hero {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px;
+      padding: clamp(18px, 3vw, 28px);
+    }
+    .kicker { color: var(--muted); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; }
+    h1 { margin: 8px 0 16px; font-size: clamp(28px, 5vw, 44px); line-height: 1.1; }
+    .sub { color: var(--muted); font-size: clamp(14px, 1.8vw, 16px); }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+      border: 0; padding: 12px 16px; border-radius: 14px; font-weight: 700; text-decoration: none;
+      transition: transform .08s ease, box-shadow .12s ease, filter .12s ease;
+    }
+    .btn:active { transform: translateY(1px) scale(.99); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #0b1020; box-shadow: 0 8px 18px rgba(124,92,255,.35); }
+    .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,.18); color: var(--text); }
+    .btn svg { width: 18px; height: 18px; }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px;
+      padding: clamp(16px, 2.8vw, 22px);
+    }
+
+    .features { display: grid; gap: 14px; }
+    .feature { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
+    .feature svg { width: 22px; height: 22px; opacity: .9; }
+    .feature h3 { margin: 0; font-size: 16px; }
+    .feature p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+
+    .card-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 2vw, 16px); margin-top: 16px; }
+    @media (max-width: 720px) { .card-row { grid-template-columns: 1fr; } }
+    .mini {
+      padding: 14px; border-radius: 16px; background: rgba(255,255,255,.06);
+      border: 1px dashed rgba(255,255,255,.14);
+    }
+    .num { font-size: 28px; font-weight: 800; letter-spacing: .02em; }
+    .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .09em; }
+
+    footer { padding: 12px clamp(16px, 3vw, 28px); color: var(--muted); border-top: 1px solid rgba(255,255,255,.08); font-size: 13px; }
+    a { color: #a5b4fc; }
+  </style>
+</head>
+<body>
+  <div class="shell" role="application" aria-label="Higher–Lower Game">
+    <header>
+      <div class="brand">
+        <div class="badge" aria-hidden="true">H↕L</div>
+        <span>Higher–Lower</span>
+      </div>
+      <button id="theme-toggle" class="theme" aria-pressed="false" title="Toggle theme">Light mode</button>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="title">
+        <div class="kicker">Guess the number</div>
+        <h1 id="title">Is it higher or lower?</h1>
+        <p class="sub">You get a hidden number in a range. Each guess tells you if the answer is higher or lower. Win fast to earn more points.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="game.html" aria-label="Start game">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Play now
+          </a>
+          <a class="btn btn-ghost" href="#rules">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            How to play
+          </a>
+        </div>
+
+        <div class="card-row" aria-label="Quick stats">
+          <div class="mini" aria-live="polite">
+            <div class="num" id="best-streak">0</div>
+            <div class="label">Best streak</div>
+          </div>
+          <div class="mini">
+            <div class="num" id="fastest-win">—</div>
+            <div class="label">Fastest win</div>
+          </div>
+          <div class="mini">
+            <div class="num" id="games-played">0</div>
+            <div class="label">Games played</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel" id="rules" aria-labelledby="rules-title">
+        <h2 id="rules-title" style="margin-top:0">Rules</h2>
+        <div class="features">
+          <div class="feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <div>
+              <h3>Goal</h3>
+              <p>Find the secret number before you run out of guesses.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h18v18H3z"></path><path d="M3 9h18"></path></svg>
+            <div>
+              <h3>Range</h3>
+              <p>Start at 1–100 by default. Pick other ranges in settings inside the game.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+            <div>
+              <h3>Scoring</h3>
+              <p>Fewer guesses and less time yield higher scores.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <span>Made for fun. No tracking. </span>
+      <span>Change the <a href="#" id="reset">stats</a> anytime.</span>
+    </footer>
+  </div>
+
+  <script>
+    // Simple localStorage stats preview for the home page.
+    const $ = (sel) => document.querySelector(sel);
+    const statsKey = "hl.stats.v1";
+
+    function formatMs(ms) {
+      if (!ms && ms !== 0) return "—";
+      const s = Math.round(ms / 1000);
+      return s + (s === 1 ? " sec" : " secs");
+    }
+
+    function readStats() {
+      try {
+        const raw = localStorage.getItem(statsKey);
+        return raw ? JSON.parse(raw) : { bestStreak: 0, fastestWinMs: null, games: 0 };
+      } catch { return { bestStreak: 0, fastestWinMs: null, games: 0 }; }
+    }
+
+    function writeStats(s) {
+      try { localStorage.setItem(statsKey, JSON.stringify(s)); } catch {}
+    }
+
+    function render() {
+      const s = readStats();
+      $("#best-streak").textContent = s.bestStreak || 0;
+      $("#fastest-win").textContent = formatMs(s.fastestWinMs);
+      $("#games-played").textContent = s.games || 0;
+    }
+
+    // Theme toggle
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    let light = prefersLight;
+    function applyTheme() {
+      if (light) {
+        document.documentElement.style.setProperty('--bg', '#f6f7fb');
+        document.documentElement.style.setProperty('--panel', 'rgba(0,0,0,.04)');
+        document.documentElement.style.setProperty('--text', '#0b1020');
+        document.documentElement.style.setProperty('--muted', '#424a5d');
+        document.getElementById('theme-toggle').textContent = 'Dark mode';
+      } else {
+        document.documentElement.style.removeProperty('--bg');
+        document.documentElement.style.removeProperty('--panel');
+        document.documentElement.style.removeProperty('--text');
+        document.documentElement.style.removeProperty('--muted');
+        document.getElementById('theme-toggle').textContent = 'Light mode';
+      }
+      document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--bg');
+    }
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      light = !light; applyTheme();
+    });
+
+    // Reset demo stats
+    document.getElementById('reset').addEventListener('click', (e) => {
+      e.preventDefault();
+      writeStats({ bestStreak: 0, fastestWinMs: null, games: 0 });
+      render();
+    });
+
+    // Demo animate numbers
+    function bump(id) {
+      const el = document.getElementById(id);
+      el.animate([
+        { transform: 'scale(1)', filter: 'brightness(1)' },
+        { transform: 'scale(1.06)', filter: 'brightness(1.3)' },
+        { transform: 'scale(1)', filter: 'brightness(1)' }
+      ], { duration: 320, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    }
+
+    // Initial render
+    render();
+    applyTheme();
+
+    // Optional: demo fake stat changes to show motion on first visit only
+    if (!localStorage.getItem('hl.home.seen')) {
+      localStorage.setItem('hl.home.seen', '1');
+      setTimeout(() => { document.getElementById('games-played').textContent = '1'; bump('games-played'); }, 700);
+      setTimeout(() => { document.getElementById('best-streak').textContent = '1'; bump('best-streak'); }, 1100);
+      setTimeout(() => { document.getElementById('fastest-win').textContent = '3 secs'; bump('fastest-win'); }, 1500);
+    }
+  </script>
+</body>
+</html>

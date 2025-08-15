@@ -1,0 +1,15 @@
+<!-- templates/winner.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>You Won!</title>
+</head>
+<body>
+    <h1>You won!</h1>
+    <p>The number was: {{ number }}</p>
+    <form action="{{ url_for('play_game') }}" method="get">
+        <button type="submit">New Game</button>
+    </form>
+</body>
+</html>
